@@ -1,0 +1,45 @@
+Code to conduct ridge regression:
+
+#Ridge Regression 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from math import sqrt
+df1 = pd.read_csv("Wine.csv")
+
+
+
+#create x and y variables
+y = df1["quality"]
+x = df1.drop(["quality"],axis = 1)
+
+#create train and test variables
+y_train = y[:int(0.8*len(y))]
+y_test = y[int(0.8*len(y)):]
+x_train = x[:int(0.8*len(x))]
+x_test = x[int(0.8*len(x)):]
+#X = np.array(x)
+#Y = np.array(y)
+
+# create a list of alpha/lamda values
+rmsError = []
+alphaList1 = [0.1**i for i in [0,1, 2, 3, 4, 5, 6]]
+
+#run the ridge regression 
+for alph in alphaList1:
+          wineRidgeModel = linear_model.Ridge(alpha=alph)
+          wineRidgeModel.fit(x_train, y_train)
+          rmsError.append(np.linalg.norm((y_test-wineRidgeModel.predict(
+             x_test)), 2)/sqrt(len(y_test)))
+print("RMS Error             alpha")
+for i in range(len(rmsError)):
+          print(rmsError[i], alphaList1[i])
+
+
+#plot curve of out-of-sample error versus alpha
+variable = range(len(rmsError))
+plt.plot(variable, rmsError, 'k')
+plt.xlabel('-log(alpha)')
+plt.ylabel('Error (RMS)')
+plt.show()
+print("Best_RMSE:",(min(rmsError)),", alpha level:",alphaList1[3])
